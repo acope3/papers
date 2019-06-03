@@ -1,0 +1,420 @@
+\documentclass[12pt]{article}
+
+\usepackage{xspace}
+\usepackage{lineno}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{color}
+\usepackage{caption}
+\usepackage[margin=1in]{geometry}
+\usepackage{epstopdf}
+\usepackage{natbib}
+\usepackage{amsmath}
+
+\begin{document}
+\doublespacing
+\linenumbers
+
+
+\newcommand{\Lik}{\ensuremath{\text{\emph{L}}}\xspace}
+\newcommand{\selacDMS}{\emph{SelAC}+DMS\xspace}
+\newcommand{\phydms}{\emph{phydms}\xspace}
+\newcommand{\selac}{\emph{SelAC}\xspace}
+\newcommand{\ecoli}{\textit{E. coli}\xspace}
+\newcommand{\gy}{\emph{GY94}\xspace}
+
+\noindent RH: LANDERER ET AL.--- Estimating genetic load
+% put in your own RH (running head)
+% for POVs the RH is always POINT OF VIEW
+\bigskip
+\medskip
+\begin{center}
+
+% Insert your title:
+\noindent{\Large \bf Experimentally informed phylogenetic models are biased towards laboratory conditions and can be improved upon by mechanistic models of stabilizing selection.}
+\bigskip
+
+
+\noindent{C\textsc{EDRIC} ~{L\textsc{ANDERER}}$^{1,2,*}$,
+B\textsc{RIAN} C.~ {O\textsc{MEARA}}$^{1,2}$,
+\textsc{AND}
+M\textsc{ICHAEL} A.~{G\textsc{ILCHRIST}}$^{1,2}$}
+
+\end{center}
+
+\vfill
+
+{\small
+\noindent$^{1}$Department of Ecology \& Evolutionary Biology, University of Tennessee, Knoxville, TN 37996-1610\\
+\noindent$^{2}$National Institute for Mathematical and Biological Synthesis, Knoxville, TN 37996-3410\\
+\noindent$^{*}$Corresponding author. E-mail:~cedric.landerer@gmail.com
+}
+
+\vfill
+\centerline{Version dated: \today}
+\vfill
+\newpage
+
+
+\section*{Introduction}
+Phylogenetic inference is of ever increasing importance across biology \citep{omeara2006,YangAndBourne2009,Ruprecht2017,SchwartzAndSchaffer2017}. 
+Most commonly used models used for phylogenetic inference are incorporated into powerful software packages such as RAxML \citep{raxml}, RevBayes \citep{revbayes}, or IQTree \citep{nguyen2015}
+While these commonly used models are fast and easy to use, they lack biological realism.
+
+Phylogenetic models focused on the nucleotide composition such as GTR, or UNREST \citep{Tavare1986,Yang1994} are limited to mutation effects and are agnostic to any higher level selection on codons or amino acids.
+Amino acid models like JTT \citep{jones1992}, BLOSSUM \citep{blossum}, or WAG \citep{whelan2001} attempt to describe the effects of natural selection, however, these do not properly account for mutations on the nucleotide level and are purely phenomenological.
+In an attempt to remedy the shortcomings of nucleotide and amino acid models, codon models combine mutation between nucleotides and selection on amino acids.
+These types of models have in common that they describe the same equilibrium frequencies at each site.
+
+
+\begin{itemize}
+	\item Phylogenetics plays an ever increasingly important role in biology.
+	\begin{itemize}
+		\item Co-Expression
+		\item species relationship across all fields of biology
+		\item protein evolution
+		\item cancer
+	\end{itemize}
+	\item Most commonly used methods
+	\begin{itemize}
+		\item Strengths
+		\begin{itemize}
+			\item Fast
+			\item Easy to use (software packages)
+		\end{itemize}
+		\item Weaknesses
+		\begin{itemize}
+			\item Many ignore key forces in evolution.
+			\item Nucleotide models account for mutation but not selection
+			\begin{itemize}
+				\item Mutation only: UNREST, GTR, JC.
+				\item Mutation rates can vary between nucleotide positions.
+				\item Use the same matrix for all site
+			\end{itemize}
+			\item Amino Acid models try to capture selection but mutation happens on nucleotide level.
+			\begin{itemize}
+				\item Selection strictly phenomenological: PAM, BLOSSUM, and WAG?
+				\item Use same matrix for all sites
+				\item Can also be applied with categorization approach introduced by Lartillot and colleagues.
+			\end{itemize}
+			\item Codon models to remedy problems of nucleotide and amino acid models
+			\begin{itemize}
+				\item Most popular one that includes selection (GY94 and derivatives) which is commonly misinterpreted and restricted selection scenario: freq dependence.
+				\item codon models allow to capture the mutation process on the nucleotide level and the selection on amino acids.
+			\end{itemize}
+			\item Mutation, AA, and codon models all end up with same AA equilibrium frequency for all sites.
+			\item Biologists have long recognized that equilibrium frequencies, and thus the substitution matrix responsible, can vary substantially between sites.
+		\end{itemize}
+		\item Halpern and Bruno (1998) provide general model.
+		\begin{itemize}
+			\item Can have distinct substitution matrix for each site.
+			\item As a result requires $19 \times n$ parameters.
+			\item Large number of parameters makes implementation unfeasible
+		\end{itemize}
+	\end{itemize}
+	\item Potential solutions to parameterization issue
+	\begin{itemize}
+		\item Use additional information: experiments via DMS
+		\item Advantages
+		\begin{itemize}
+			\item DMS generates estimates of site specific selection on amino acids for large amount of mutations in a single experiment.
+			\item This allows for the fitting of complex site specific models to smaller data sets
+			\begin{itemize}
+				\item Site specific selection on amino acids improves model fits.
+			\end{itemize}
+		\end{itemize}
+		\item Shortcomings
+		\begin{itemize}
+			\item Empirical selection estimates are not always available.
+			\begin{itemize}
+				\item DMS experiments are limited to proteins and organisms that can be manipulated under laboratory conditions, greatly limiting their application in phylogenetics.
+			\end{itemize}
+			\item Application for phylogenetic inference is questionable.
+			\begin{itemize}	
+				\item Estimates depend on factors like initial library of mutants, leading to heterogeneous competing populations.
+				\item The applied selection between the wild and the laboratory is likely to differ.
+				\item Hilton et al. (2017) showed that have a reproducibility problem and the resulting variation between DMS experiments can have a significant effect on their utility.
+			\end{itemize}
+		\end{itemize}
+		\item Use better models
+		\begin{itemize}
+			\item Lartillot and colleagues mitigate this issue using a site categorization approach. (Mention in discussion as potential next step to avoid reviewers asking you to do this.)
+			\item \selac also uses site categorization approach similar to Lartillot and colleagues by using a simplistic nested model of amino acid distances in physicochemical space.
+			\begin{itemize}
+				\item \selac is rooted in population genetics, like Lartillot work.
+				\item \selac uses distance in physicochemical space between amino acids to describe decline in fitness.
+			\end{itemize}        
+		\end{itemize}
+		\item Ideally, we would use better models and additional data.
+	\end{itemize}
+	\item We assess the reliability of selection on amino acids inferred by DMS to inform phylogenetic studies.
+	\begin{itemize}
+		\item we utilize a DMS experiment by Stiffler et al. (2016) for TEM.
+		\item TEM is found in gram-negative bacteria like \ecoli.
+		\item The applied selection pressure was limited to ampicillin and focused on the sequence variant TEM-1.
+		\item TEM, however, can confer resistance to a wide range of antibiotics, causing it to be of wide interest.
+	\end{itemize}
+	\item Main Findings: A) Results consistent with previous work, but unnatural supplementary data causes poor model adequacy, clearly demonstrating that better models are more informative.
+	\begin{itemize}
+		\item Model selection preferred \selac over \phydms.
+		\item Evidence that DMS data does not describe conditions in the wild
+		\begin{itemize}
+			\item Poor model adequacy (c.f.~\selac)
+			\item Optimal aa under DMS not consistent with genetic variation in TEM observed in wild (c.f.~\selac).
+			\item Genetic loads implied by DMS very large (c.f.~\selac).
+		\end{itemize}
+		\item \selac has higher model adequacy and provides more realistic estimates of genetic load.
+	\end{itemize}
+	\item Conclusion:
+        \begin{itemize}
+		\item Better models more informative and applicable than un-natural supplementary data
+		\item \selac provides additional, biologically meaningful information such as site specific optimal amino acid and fitness landscape.
+		\begin{itemize}
+			\item \selac does not rely on supplementary data.
+			\item \selac can be expanded to test other hypothesis.
+		\end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\section*{Results}
+\subsection*{\selac Outperforms Experimentally Informed Models}
+\begin{itemize}
+	\item Models of site specific selection dramatically improve model fit.
+	\begin{itemize}
+		\item Compare \selac and \phydms to 131 nucleotide and 97 codon models and variations.
+		\item \selac shows best model fit.
+		\item \phydms parameterized by data from Stiffler et al. (2016) was second best.
+		However, problems (discussed below)
+		\item Best codon model without site specific selection is \gy.
+		\item \gy is outperformed by multiple nucleotide models like \emph{SYM}+R2.
+		\item Caveats
+		\begin{itemize}
+			\item Treated AA as discrete parameters (conservative, discuss more later).
+			\item Topology between the model fit of \phydms and \selac differs.
+			\begin{itemize}
+				\item \selac is too slow for a topology search, therefore we used a topology inferred with the model by Kosiol et al (2007).
+				\item \phydms started at Kosiol topology, but estimated a different one, suggesting that we are being conservative.
+				\item \selac with \phydms topology ...        
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	\item Additional observations
+	\begin{itemize}
+		\item Statement about evolution inferred from our results with \selac vs \phydms vs other models (nt, codon, aa).
+		% \selac model fit shows $84 \%$ of all substitutions (evolution? deep divergence?) happening at the external branches, while this reduces to $77 \%$ in the \phydms model fit.
+		\item Another statement?
+	\end{itemize}
+\end{itemize}
+
+\subsection*{Shortcomings of DMS Data}
+Below implies that DMS environment of lab is fundamentally different from wild.
+\subsubsection*{DMS Leads to Poor Model Adequacy for TEM}
+\begin{itemize}
+	\item We define model adequacy as similarity of selectively favored amino acids and observed consensus sequence.
+	\item Low adequacy of DMS inferences.
+	\begin{itemize}
+		\item Experimentally inferred sequence of selectively favored amino acids has only $52 \%$ sequence similarity with the observed consensus sequence.
+		\item Suggests that DMS selection are not informative about selection in wild.
+		Additional support for claim
+		\begin{itemize}
+			\item The experimentally inferred optimal amino acid is not observed in nature at X \% of sites.
+			\item Physicochemical properties appear to differ between observed and estimated optimal amino acids
+		\end{itemize}
+	\end{itemize}
+	\item High adequacy of \selac's inferences
+	\begin{itemize}
+		\item \selac inferred sequence of selectively favored amino acids has $99 \%$ sequence similarity with the observed consensus sequence.
+		Perhaps not surprising given this was the only data \selac used.
+	\end{itemize}	
+\end{itemize}
+
+\subsubsection*{DMS Predictions Inconsistent with Observed Genetic Variation in TEM}
+Qualitative comparison
+\begin{itemize}
+	\item Distribution of genetic load differs between DMS inferred site specific selection and \selac inferred site specific selection.
+	\begin{itemize}
+		\item Assuming the site specific selection estimated by DMS, 111 sites have a genetic load of 0, at $107$ of those sites DMS and \selac agree in their estimated optimal amino acid.
+		\item Assuming the site specific selection estimated by \selac, 207 sites have a genetic load of 0.
+		\begin{itemize}
+			\item In general, it is not surprising to find a large number of sites with 0 genetic load as many sites (X \%) show no variation in the observed amino acid.
+		\end{itemize}
+		\item Thus, for $100$ sites \selac does estimate a genetic load of 0 but DMS does estimate non-zero genetic load, the inverse is true for four sites.
+		\begin{itemize}
+			\item A closer look at the $100$ sites for which \selac does estimate a genetic load of $0$ but DMS does estimate a non-zero load revealed that all $100$ sites display a significant difference in likelihood between the \selac and DMS estimated optimal amino aicd.
+			\item These $100$ sites show a significantly ($p = 3\times10^{-13}$) higher mean genetic load under the DMS estimates than the remaining $163$ sites of $0.0157$ and $0.003$, respectively, indicating that DMS represents the evolution of TEM particularly badly at these sites.
+		\end{itemize}
+		\item For the $52$ sites where both, DMS and \selac, estimate a non-zero genetic load we find a correlation of $\rho = 0.247$, explaining $6 \%$ of the variation in the empirical selection estimates, when compared on the log scale.
+		\begin{itemize}
+			\item In $26$ cases \selac and DMS estimate the same optimal amino acid.
+			\item The remaining cases all show a significant difference in likelihood between the \selac and DMS inferred optimal amino acids.
+			\item The $26$ cases in which the inferred optimal amino acid differs, we observe a significantly higher mean genetic load ($p = 2\times10^{-5}$) than in the remaining $26$ sites of $0.0158$ and $0.004$, respectively, for which \selac and DMS estimate the same optimal amino acid
+		\end{itemize}
+	 %\item Where are these sites?
+	\end{itemize}
+\end{itemize}
+
+
+\begin{table}[h]
+  \centering
+  \caption{Genetic load at variant and invariant sites in the TEM alignment according to DMS and \selac}
+  \begin{tabular}{lccc}
+    \hline
+			& 		& \multicolumn{2}{c}{Genetic Load}  \\ 
+    Sites 		& \# Residues	& \multicolumn{1}{c}{\selac} & \multicolumn{1}{c}{DMS} \\ \hline 
+    Variant	&	66	& $6.3\times10^{-7}$ & 0.010  \\
+    Invariant		& 	197	& 0 & 0.007 \\
+  \end{tabular}
+  \label{tab:selection}
+\end{table}
+
+\subsubsection*{DMS Implies Unrealistic Genetic Loads}
+Quantitative comparison
+\begin{itemize}
+	\item Estimates of genetic load differ greatly between the \selac and experimentally estimated fitness landscape.
+	\begin{itemize}
+		\item The site specific selection estimated by DMS for the observed TEM sequences represent an average site specific load of $0.065$ which is an average sequence specific genetic load of $17.12$.
+		\item In contrast, the site specific selection estimated by \selac for the observed TEM sequences represent an average site specific load of $2.4\times10^{-7}$ which is an average sequence specific genetic load of $6.4\times10^{-5}$..
+	\end{itemize}
+	\item Simulations under DMS and \selac inferred selection were used to establish point of reference and further assess model adequacy.
+	\begin{itemize}
+		\item Simulations assuming the DMS inferred selection show that the genetic load of the observed sequences is significantly larger than the genetic load of the simulated sequences
+		\begin{itemize}
+			\item We find an average sequence specific load of $6.68$ or, equivalently, an average site specific genetic load of $0.025$.
+		\end{itemize}
+		\item Simulations assuming the \selac inferred selection as well show that the genetic load of the observed sequences is significantly larger than the genetic load of the simulated sequences.
+		\begin{itemize}
+			\item We find an average sequence specific load of $1.3\times10^{-5}$ or, equivalently, an average site specific genetic load of $4.8\times 10^{-8}$.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+
+%\subsection*{Comparing \selac Inferences of Site Specific Selection for Homologous Sequences TEM and SHV}
+%\begin{itemize}
+%	\item Site specific genetic load for TEM and SHV is not correlated ($\rho = 0.006$) and , despite similar $\alpha_G$
+%	\begin{itemize}
+%	 \item Exclusing site with no genetic load and calculating the correlation on the log scale lead to a correlation coefficient of $\rho = 0.22$. 
+%	\end{itemize}
+%	\item Greatest difference is observed in the physicochemical properties, specifically $\alpha$.
+%	\item No significant differences are observed in average genetic load between secondary structure elements (Table \ref{tab:selection}).
+%\end{itemize}
+
+%\begin{table}[h]
+%  \centering
+%  \caption{Efficacy of selection ($G$) and genetic load for TEM and SHV, and separated by secondary structure. $G$ was estimated as a truncated variable with an upper bound of 300.}
+%  \begin{tabular}{llrrrrr}
+%    \hline
+%    & & & \multicolumn{2}{c}{$G$} & \multicolumn{2}{c}{Genetic Load $L_i$} \\ 
+%    Protein & Secondary Structure & \# Residues	& \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{SE} & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{SE} \\ \hline 
+%    TEM	&		& 263 & 219.3 & 7.5  & $15.9\times10^{-8}$ & $6.5\times10^{-8}$ \\
+%    &Helix 		& 113 & 206.1 & 12.4 & $17.5\times10^{-8}$ & $13.1\times10^{-8}$ \\
+%    &$\beta$-Sheet 	&  48 & 238.6 & 15.8 & $ 6.8\times10^{-8}$ & $2.9\times10^{-8}$ \\
+%    &Unstructured 	& 102 & 224.8 & 11.4 & $18.6\times10^{-8}$ & $8.1\times10^{-8}$ \\
+%    &Active/Binding Sites 	&   5 & 202.6 & 62.2 & $0.01\times10^{-8}$& $0.01\times10^{-8}$ \\ \hline
+    
+%    SHV&		& 263 & 244.9 & 6.8  & $4.0\times10^{-8}$ & $1.9\times10^{-8}$ \\
+%    &Helix		& 102 & 234.6 & 11.5 & $7.3\times10^{-8}$ & $4.8\times10^{-8}$ \\
+%    &$\beta$-Sheet 	&  66 & 253.1 & 12.8 & $2.1\times10^{-8}$ & $1.1\times10^{-8}$ \\
+%    &Unstructured	&  95 & 224.7 & 11.4 & $1.5\times10^{-8}$ & $0.6\times10^{-8}$  \\
+%    &Active/Binding Sites	&   5 & 239.9 & 60.0 & $1.5\times10^{-8}$ & $1.5\times10^{-8}$ \\ \hline
+%  \end{tabular}
+%  \label{tab:selection}
+%\end{table}
+
+
+\section*{Move from Results}
+\begin{itemize}
+\item Number of parameters estimated from phylogenetic data differs between \selac and \phydms. (Methods and Discussion)
+\item unclear how to deal with number of parameters we, therefore, toked a conservative approach. (Methods and Discussion)
+  \item It is tempting to assume that the consensus sequence will always fair best, however, this would implicitly assume independence between observed sequences.
+\item The high sequence similarity of the consensus sequence and the sequence of selectively favored amino acids is likely due to the high average sequence similarity between the 49 observed sequences of $98 \%$.
+%\item Furthermore, in addition to providing an estimate of the selectively favored amino acid, \selac also allows to estimate the genetic load of observed amino acids.
+  \end{itemize}
+
+
+\section*{Discussion}
+\begin{itemize}
+	\item We evaluate how well experimental selection estimates obtained by DMS explain natural sequence evolution and compare it to a novel phylogenetic framework, \selac.
+	\begin{itemize}
+		\item Our resutls confirms that \phydms, which uses DMS selection estimates, can improve model fit over classical approaches like \gy.
+		\item However, model selection shows that the \selac model fits even better than \phydms.
+	\end{itemize}
+
+	\item Poor model adequacy of the DMS estimates of selection was previously ignored.
+	\begin{itemize}
+		\item The amino acid sequence with the highest fitness estimated using DMS has only $49 \%$ sequence similarity with the observed consensus sequence.
+		\item In contrast, the SelAC estimate has $99 \%$ sequence similarity. 
+		\item In addition, we find evidence that experimental estimates of selection do not represent evolution in the wild.
+ 		\begin{itemize}
+			\item Due to artificial selection environment; Heterogeneous population, very large $s$. 
+			\item Only one antibiotic used, maybe a mixture of antibiotics would better reflect natural evolution.
+			\item Lack of repeatability between labs introduces further problems (Firnberg et al 2014 vs. Stifler et al. 2016).
+		\end{itemize}
+	\end{itemize}
+
+	\item Assuming that the DMS selection inference adequately reflects natural evolution, the observed TEM sequences are either maladapted or were unable to reach a fitness peak.
+	\begin{itemize}
+		\item However, \textit{E. coli} has a large effective population size, estimates are on the order of $10^8$ to $10^9$ (Ochman and Wilson 1987, Hartl et al 1994).
+		\item The large $N_e$ would allow \textit{E. coli} to effectively "explore" the sequence space, thus suggesting that the TEM sequences are mal-adapted according to the DMS estimates.
+		\begin{itemize}
+			\item With a mutation rate of $2.54\times 10^{-10} \times 789 = 2\times 10^{-7}$ mutations per generation for TEM (Lee et al. 2012), we expect between $\mu N_e = 10^1$ and $10^2$ new mutations per generation of which on average XXX \% are advantages per site.
+			\item Our simulations of sequence evolution with various $N_e$ values and the DMS fitness values show that we would expect higher adaptation even with much smaller $N_e$.
+		\end{itemize}
+		\item In addition, with an average site specific selection $0.085$, we would expect that mutations fix on average between $(4/|s|)\times \ln(2N_e) \approx 1200$ and $1300$ generations assuming $N_e$ to be on the order of $10^8$ to $10^9$ (Crow and Kimura 1970).
+		\item As \textit{E. coli} doubles every 15 hours in the wild (Gibson et al. 2018), we would therefore expect that a mutation with an average $s = 0.085$ sweeps through the population of size $10^9$ in $\sim 1.5$ years.
+		\begin{itemize}
+			\item This sweep would only accelerate with reduced $N_e$ due to e.g. isolation between populations.
+		\end{itemize}
+	\end{itemize}
+	
+	\item The evidence derived from population genetics theory has us expecting the observed sequences to be at the selection-mutation-drift equilibrium, which is not the case if we assume the DMS inference of selection.
+	\begin{itemize}
+		\item Estimates of selection obtained from \selac, in contrast, show the observed sequences to be have high fitness.
+		\begin{itemize}
+			\item The average site specific genetic load estimated by \selac is four orders of magnitude lower than the average site specific load esimated using DMS ($2.4\times10^{-7}$ vs. $0.065$).
+		\end{itemize}
+		\item We find the majority of sequences near the optimum, indicating that the \selac estimates are consistent with theoretical population genetics results.
+		\item Taken together, it appears that DMS reflects the selection on the TEM sequence with respect to only one antibiotic, which seems appropriate to model selection in a hospital environments but not when the interest lies in the evolution of TEM in the wild.
+	\end{itemize}
+	
+	\item In addition to the result that \selac better explains the evolution of observed sequences in the wild, \selac has the advantage that it can be applied to any protein coding sequence alignment, however, is not without flaws itself.
+	\begin{itemize}
+		\item Like DMS and most phylogenetic models, \selac assumes site independence.
+		\item \selac is a model of stabilizing selection, in contrast to e.g. GY94 which is a model of frequency dependent selection.
+		\begin{itemize}
+			\item Since TEM plays a role in the chemical warfare with conspecifics and other microbes, some sites may be under frequency dependent selection.
+		\end{itemize}
+		\item In addition \selac assumes that selection follows the same distribution for all sites.
+		\begin{itemize}
+			\item However, the distribution of selection could differ for sites in the different secondary structure types.
+			\item Similarly, active sites may not follow the assumed distribution.
+		\end{itemize}
+		\item \selac also assumes that selection is proportional to the distance of amino acids in physicochemical space. 
+		\begin{itemize}
+			\item In this study, we defaulted to the properties described by Grantham (1974) polarity, composition, and molecular volume, however, many other distances are available which may improve model fit.
+		\end{itemize}
+	\end{itemize}
+	\item Low sequence variation in the TEM may be cause for concern as it could be misinterpreted by the model as stabilizing selection because of the short branches.
+	\begin{itemize}
+		\item However, population genetics indicate the newly introduced mutations would sweep rapidly through the population if they provide a strong fitness advantage.
+	\end{itemize}
+	\item In conclusion, DMS experiments have been proposed to supplement information on selection on amino acids in phylogenetic studies.
+	\begin{itemize}
+		\item This study shows that information on selection can be extracted from alignments of protein coding sequences using a carefully constructed model of stabilizing selection rooted in first principles.
+		\item Further, we highlight the bias of laboratory inferences of selection and suggest to focus efforts in improving phylogenetic inference on the development of more realisitc models.
+	\end{itemize}
+\end{itemize}
+
+\bibliographystyle{natbib}
+\bibliography{ecoli}
+
+\end{document}
+
+
+
+
+
+
+

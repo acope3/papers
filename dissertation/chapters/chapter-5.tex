@@ -1,0 +1,86 @@
+\chapter{Conclusion} \label{ch:conclusion}
+\section{Summary}
+
+Protein synthesis from mRNA is the metabolically most expensive process a cell performs with about $20 \%$ of the cells total energy budget \citep{Reeds1985,WaterlowAndMillward1989}.
+The direct cost for the translation of a protein of length $L$ requires $4L+4$ high energy phosphate bonds provided by ATP and GTP molecules.
+Protein synthesis is the results of a complex interplay of many different metabolic and regulatory pathways.
+%From transcriptional regulation and transcription over the transport of mRNA into the cytosol to the translation of mRNA into proteins.
+Each step of protein synthesis is under selection and prone to errors with consequences for downstream processes. % , the translation of mRNA was always a strong focus of a wide body of research.
+This enormous energy expenditure for the translation of a protein from mRNA leads to strong selection for efficient translation \citep{gilchrist2007, DrummondAndWilke2008, gilchrist2009, ShahAndGilchrist2011, gilchrist2015}.
+However, the efficacy of selection varies with the effective population size $N_e$ between organisms, the rate of protein synthesis, and absolute difference in metabolic expenditure with changes in amino acid and codon usage.
+
+On the other hand, proteins are involved in almost all processes a cell performs.
+From communication between cells, over the processing of metabolites, to the transport of nutrients.
+This ratio of cost to benefit is the fundamental concept I applied to understand and separate the effects mutation, selection, and genetic drift have on protein sequence evolution.
+I approached cost and benefit by applying mechanistic models rooted in first principles to protein coding sequences.
+In chapter \ref{ch:kluyveri}, I focused on the cost of protein synthesis and explored the effects of mismatched codon usage.
+In chapter \ref{ch:phylogeny}, I focused on the benefit of protein synthesis and estimated site specific selection on amino acids and assessed their adequacy.
+
+
+\subsection{The Value of Mechanistic Models}
+
+Mathematical and statistical models exist on a spectrum from descriptive over phenomenological to mechanistic with increasing power to extract information from data.
+Models allow us to summarize data and identify patterns.
+They are an essential tool to formalize verbal theory and allow for hypothesis testing.
+Well formulated models grounded in first principles can provide insights into underlying biological processes.
+Yet, we still have blackboxes in our models and many phenomena could lead to the model when approximated.
+
+While descriptive and phenomenological models are important contributions to summarize processes, these models lack explanatory power.
+In contrast, mechanistic models allow researchers to extract information about the processes underlying the data.
+Mechanistic models, however, require an understanding about the underlying process which may not always be available.
+Even when this information is available, transition towards mechanistic models can be slow.
+For example, the most popular models used today to analyze codon usage are still phenomenological \citep{ikemura1981,BennetzenAndHall1982,sharp1987,Wright1990,dosreis2003,dosreis2004}.
+While these phenomenological models provide good heuristics to explore differences in codon usage or other phenomena, they do not directly account for the evolutionary forces shaping the observed patterns such as selection, mutation, or genetic drift.
+Accounting for these forces allows for the proposal and testing of more sophisticated hypothesis as I demonstrate in chapter \ref{ch:kluyveri} and chapter \ref{ch:phylogeny}.
+
+\subsection{Mechanistic Models Supplement Experiments}
+
+In addition to extracting information about biological processes from data, mechanistic models can help supplement experimental procedures.
+Empirical estimates of site specific selection are a valuable resource to e.g. identify sites conferring antibiotic resistance \citep{firnberg2014, stiffler2016}.
+While the unit that selection can act on is the amino acid, amino acids are a complex collection of \PC properties.
+It is, therefore, unclear for which properties amino acids are actually selected and when.
+Mechanistic models could be used to explore differences in the selection for \PC properties within and across proteins.
+Furthermore hypothesis could be formulated about the differing importance of \PC properties between e.g. sites or secondary structure elements
+
+\section{Estimating Protein Functional and Fitness Landscape}
+
+The selection on a protein sequence is highly complex. 
+A protein of length $L$ has $20^L$ possible states it can occupy in a $L$ dimensional fitness landscape.
+This enormous complexity makes it prohibitively expensive to study protein fitness landscapes without simplifying assumptions.
+It is therefore important to be aware of potential impacts such assumptions have on the obtained results and how models can be further improved.
+However, despite such simplifying assumptions, valuable information has been extracted from protein coding sequences.
+
+\subsection{The Importance of Translation Errors}
+
+We often think of genes evolving with natural selection favoring proteins that encode their function optimally, with mutations and genetic drift reducing protein functionality.
+The error rate of protein synthesis is five to six orders of magnitude higher than mutations, causing between 10\% and 20\% of average length proteins to contain errors \citep{GoldsmithAndTawfik2009, DrummondAndWilke2009}, creating more erroneous high expression proteins such as ribosomal proteins than error free low expression proteins.
+Selection on a gene is, therefore, not based solely on the error free protein sequence, but on the average fitness of the population of proteins resulting from a gene by means of error prone protein synthesis.
+Previous work showed that proteins with functionality essential to an organism can adapt to increased error rates by increasing gene expression and showed increased selection for more stable proteins \citep{GoldsmithAndTawfik2009}.
+
+Organisms can take two routes to minimize the synthesis of proteins with altered functionality \citep{DrummondAndWilke2009}.
+First, organisms can evolve to minimize the rate at which errors during protein synthesis occur, e.g. selecting for codons that minimize translation error rates \citep{Akashi2003, GilchristAndWagner2006}.
+Second, selection could favor proteins with increased robustness to transcriptional and translational errors, e.g. increase protein stability or increase protein synthesis to compensate for non-functional proteins \citep{GoldsmithAndTawfik2009}.
+
+In chapter \ref{ch:kluyveri}, I assumed that the translation process is error free, and that each produced protein functions optimal.
+Thus, I explicitly ignore any selection on the reduction of translation error rates.
+While selection for the reduction of translation error rates and selection on ribosome overhead cost do not have to be counteracting forces, they could be for some synonymous codon families.
+The employed \ROC framework \citep{gilchrist2015} yields $100 \%$ usage of the most efficient codon if proteins synthesis rate is high enough.
+While individual genes may reach a $100 \%$ codon usage of the most efficient codon, we do not observe populations of high expression genes like that in nature.
+It is therefore unclear if selection for ribosome overhead cost can overpower counteracting selective forces if protein synthesis rate is high enough.
+
+\subsection{Homogeneous Selection}
+
+In \ROC and \selac functionality of a protein refers to the ability of a protein to perform its function and the overall need of an organism for the function.
+The functionality of a protein depends on many factors \citep{DrummondAndWilke2009}.
+As a result, we can approximate the functionality of the protein sequence $\vec{a}$ in a multitude of ways \citep{Gibbs1873, grantham1974, Cohen2009}.
+However, none can capture the full complexity of a folded protein.
+It is easy to imagine how the strength, or direction of selection can vary between amino acid site, secondary structures and protein domains within the same protein and certainly between proteins.
+For example, the functionality of a well-adapted protein is unlikely to be increased by an amino acid substitution.
+However, the effect on the functionality and in turn fitness of a substitution may drastically differ between active sites and structural sites.
+Similarly, the exchange of an hydrophilic amino acid with a hydrophobic amino acid is likely to have different effects on the surface of a protein than at the core. 
+
+The \selac framework \citep{beaulieu2019} employed in chapter \ref{ch:phylogeny} assumes that the efficacy of selection follows a gamma-distribution.
+This distribution is applied to all sites. 
+I, therefore, explicitly do not account for potential differences in the distribution of selection between e.g. secondary structure elements.
+Similarly, selection for \PC properties may differ between sites in e.g. the core or at the surface of a protein.
+Improvements to \selac with regards to these shortcomings would allow for new hypothesis to be tested and novel information to be gained from the same data.
